@@ -1,0 +1,246 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="echarts.min.js"></script>
+    <style>
+        @font-face {
+            font-family: DIN;
+            src:url(DIN.woff) format("woff");
+            font-weight:400;
+            font-style:normal;
+            font-stretch:normal;
+            unicode-range:U+0020-F000
+        }
+        html { height: 100%; font-family: DIN, Arial, Helvetica}
+        body { height: 100%; margin: 0; background: #191711; color: #948e83}
+        #chart {
+            height: 100%; width: 100%;
+            background: #191711
+            url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTA5IiBoZWlnaHQ9IjUwOSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+IDxkZWZzPiA8cGF0dGVybiBpZD0ic3RyaXBlcyIgeD0iMCIgeT0iMCIgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBwYXR0ZXJuVHJhbnNmb3JtPSJyb3RhdGUoNDUpIj4gPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjIwIiByeD0iMCIgcnk9IjAiIHN0eWxlPSJzdHJva2U6IG5vbmU7IGZpbGw6ICMyZjJlMmE7Ii8+IDxyZWN0IHg9IjEwIiB5PSIwIiB3aWR0aD0iMTAiIGhlaWdodD0iMjAiIHJ4PSIwIiByeT0iMCIgc3R5bGU9InN0cm9rZTogbm9uZTsgZmlsbDogIzFmMWUxYTsiLz4gPHBhdGggZD0iTTIwLDAgTDIwLDIwIiBzdHlsZT0ic3Ryb2tlOiM1ZjVlNWE7IHN0cm9rZS13aWR0aDogMXB4OyBmaWxsOm5vbmU7IiAvPiA8cGF0aCBkPSJNMTAsMCBMMTAsMjAiIHN0eWxlPSJzdHJva2U6IzBmMGUwYTsgc3Ryb2tlLXdpZHRoOiAxcHg7IGZpbGw6bm9uZTsiIC8+IDwvcGF0dGVybj4gPC9kZWZzPiA8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iNTA5IiBoZWlnaHQ9IjUwOSIgcng9IjAiIHJ5PSIwIiBzdHlsZT0ic3Ryb2tlOiBub25lOyBmaWxsOiB1cmwoI3N0cmlwZXMpOyBvcGFjaXR5OiAwLjYiLz4gPC9zdmc+") repeat;
+            -moz-box-shadow: inset 0 0 42px 0 #000, 0 0 1.1em 0 rgba(0, 0, 0, 0.55), rgba(255, 255, 255, 0.2) 0 0px 0 2px;
+          -webkit-box-shadow: inset 0 0 42px 0 #000, 0 0 1.1em 0 rgba(0, 0, 0, 0.55), rgba(255, 255, 255, 0.2) 0 0px 0 2px;
+           box-shadow: inset 0 0 42px 0 #000, 0 0 1.1em 0 rgba(0, 0, 0, 0.55), rgba(255, 255, 255, 0.2) 0 0px 0 2px;
+        }
+    </style>
+  </head>
+  <body>
+    <div id="chart"></div>
+
+    <script type="text/javascript">
+
+    var dom = document.getElementById("chart");
+    var nonceChart = echarts.init(dom, 'dark');
+    window.onresize = nonceChart.resize;
+
+    nonceChart.showLoading({
+        text : 'Loading Block Dataset. Please wait...',
+        maskColor: 'rgba(26, 23, 17, 0.92)',
+        textColor: '#ff6600'
+    });
+
+    fetch('blockdata.json')
+    .then((resp) => resp.json())
+    .then(function(data) {
+        drawChart(data);
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+
+    function drawChart(series) {
+    option = {
+        backgroundColor: '#191711',
+        textStyle: {
+            fontFamily: 'DIN',
+            fontSize: 14
+        },
+        tooltip: {},
+        toolbox: {
+            show : true,
+            feature : {
+                restore : {show: true, title: 'Reload'},
+                saveAsImage : {show: true, title: 'Save as PNG'}
+            }
+        },
+        xAxis: {
+            data: series.height,
+            boundaryGap: false,
+
+            axisLabel: {
+                textStyle: {
+                    color: '#8c9e45'
+                }
+            },
+            axisLine: {
+                lineStyle:  {
+                    color: '#8c9e45',
+                    width: 2,
+                }
+            },
+            axisTick: {
+                lineStyle:  {
+                    color: '#8c9e45',
+                }
+            },
+            name: 'Block Height',
+            nameLocation: 'middle',
+            nameTextStyle: {
+                color: '#8c9e45',
+                padding: [15,0,0,0]
+            }
+        },
+        yAxis: [{
+            name: 'Nonce',
+            max: 4300000000,
+            type: "value",
+            scale: true,
+            nameLocation: 'middle',
+            nameTextStyle: {
+                padding: [0,0,35,0]
+            },
+            axisLabel: {
+                formatter: function(value) {
+                    return value.toExponential()
+                },
+            },
+            axisLine: {
+                lineStyle:  {
+                    color: '#e9dcc2',
+                    width: 2,
+                }
+            },
+            axisTick: {
+                lineStyle:  {
+                    color: '#e9dcc2',
+                }
+            },
+            splitLine: {
+                show: false
+            }
+        },
+        {
+            name: 'Network Difficulty',
+            type: "value",
+            scale: true,
+            nameLocation: 'middle',
+            nameTextStyle: {
+                color: '#ff6600',
+                padding: [30,0,0,0]
+            },
+            axisLabel: {
+                formatter: function(value) {
+                    return (value/1000000000) + "B"
+                },
+                textStyle: {
+                   color: '#ff6600'
+                }
+            },
+            axisLine: {
+                lineStyle:  {
+                    color: '#ff6600',
+                    width: 2,
+                }
+            },
+            axisTick: {
+                lineStyle:  {
+                    color: '#ff6600',
+                }
+            },
+            splitLine: {
+                show: false
+            }
+        }],
+        series: [{
+            name: 'Nonce',
+            type: 'scatter',
+            animation: false,
+            symbolSize: 1,
+            large: true,
+            itemStyle: {
+                color: "#e9dcc2",
+                opacity: 0.8
+            },
+            data: series.nonce,
+            yAxisIndex: 0
+        },
+        {
+            name: 'Diff',
+            type: 'line',
+            animation: false,
+            symbol: null,
+            lineStyle: {
+                color: "rgba(255, 102, 0, 0.4)",
+                opacity: 0.2,
+                width: 1
+            },
+            data: series.diff,
+            yAxisIndex: 1
+        }],
+        dataZoom: [{
+            show: true,
+            xAxisIndex: 0,
+            y: 15,
+            textStyle: {
+                color: '#8392A5'
+            },
+            lineStyle: {
+                opacity: 0.8,
+                color: '#8c9e45'
+            },
+            handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+            handleSize: '80%',
+            dataBackground: {
+                areaStyle: {
+                    color: '#8c9e45'
+                },
+                lineStyle: {
+                    opacity: 0.8,
+                    color: '#8c9e45'
+                }
+            },
+            handleStyle: {
+                color: '#8c9e45',
+                shadowBlur: 3,
+                shadowColor: 'rgba(0, 0, 0, 0.6)',
+                shadowOffsetX: 2,
+                shadowOffsetY: 2
+            }
+        },
+        {
+            show: true,
+            yAxisIndex: 0,
+            x: 25,
+            orient: 'vertical',
+            textStyle: {
+                color: '#8392A5'
+            },
+            handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+            handleSize: '80%',
+            dataBackground: {
+                areaStyle: {
+                    color: '#e9dcc2'
+                },
+                lineStyle: {
+                    opacity: 0.8,
+                    color: '#e9dcc2'
+                }
+            },
+            handleStyle: {
+                color: '#e9dcc2',
+                shadowBlur: 3,
+                shadowColor: 'rgba(0, 0, 0, 0.6)',
+                shadowOffsetX: 2,
+                shadowOffsetY: 2
+            }
+        }]
+
+    };
+
+    nonceChart.setOption(option);
+    nonceChart.hideLoading();
+
+    }
+
+    </script>
+  </body>
+</html>
